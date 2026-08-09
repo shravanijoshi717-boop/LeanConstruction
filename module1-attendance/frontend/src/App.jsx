@@ -64,9 +64,9 @@ function App() {
   const renderDashboard = () => {
     switch (userProfile?.role) {
       case "contractor":
-        return <ContractorDash />;
+        return <ContractorDash userProfile={userProfile} />;
       case "supervisor":
-        return <SupervisorDash />;
+        return <SupervisorDash userProfile={userProfile} />;
       case "worker":
         return <WorkerDash user={session.user} />;
       default:

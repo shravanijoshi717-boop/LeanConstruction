@@ -2,18 +2,29 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import "./AddWorkerModal.css";
 
-export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existingUsers = [] }) {
+export default function AddWorkerModal({
+  isOpen,
+  onClose,
+  onWorkerAdded,
+  existingUsers = [],
+  currentUserRole = "contractor",
+  currentUserId,
+  contractorId,
+}) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("welcome123");
   const [role, setRole] = useState("worker");
   const [fingerprintId, setFingerprintId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successInfo, setSuccessInfo] = useState(null);
 
+  const isSupervisor = currentUserRole === "supervisor";
+  const activeContractorId = contractorId || currentUserId;
+
   useEffect(() => {
     if (isOpen) {
-      // Auto-suggest next available fingerprint_id: MAX(fingerprint_id) + 1
       const existingIds = existingUsers
         .map((u) => u.fingerprint_id)
         .filter((id) => id !== null && id !== undefined && !isNaN(id));
@@ -22,11 +33,12 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
       setFingerprintId(nextId.toString());
       setFullName("");
       setEmail("");
+      setPassword("welcome123");
       setRole("worker");
       setError(null);
       setSuccessInfo(null);
     }
-  }, [isOpen, existingUsers]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -49,67 +61,88 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
       return;
     }
 
+    const assignedRole = isSupervisor ? "worker" : role;
+    const isWebAccount = assignedRole === "supervisor" || email.trim().length > 0;
+
     try {
-      // Use provided email or generate internal site email for auth FK constraint
-      const targetEmail = email.trim() || `worker_${fpId}_${Date.now().toString().slice(-4)}@site.internal`;
-      const tempPassword = "test" + Math.random().toString(36).slice(-6) + "123";
+      let userId = crypto.randomUUID();
 
-      // 1. Create Auth account (satisfies users_id_fkey constraint)
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: targetEmail,
-        password: tempPassword,
-        options: {
-          data: {
-            full_name: fullName.trim(),
-            role: role,
-          },
-        },
-      });
-
-      if (authError) {
-        setError(`Registration error: ${authError.message}`);
-        setLoading(false);
-        return;
-      }
-
-      if (!authData?.user) {
-        setError("Failed to create user record.");
-        setLoading(false);
-        return;
-      }
-
-      const userId = authData.user.id;
-
-      // 2. Set fingerprint_id on the newly created public.users row
-      const { data: updatedUser, error: updateError } = await supabase
-        .from("users")
-        .update({ fingerprint_id: fpId })
-        .eq("id", userId)
-        .select()
-        .single();
-
-      if (updateError) {
-        if (updateError.message.includes("fingerprint_id")) {
-          setError(`Fingerprint ID #${fpId} is already assigned to another worker.`);
-        } else {
-          setError(updateError.message);
+      if (isWebAccount) {
+        if (!email.trim()) {
+          setError("Email address is required for Supervisors so they can log into the portal.");
+          setLoading(false);
+          return;
         }
-        setLoading(false);
-        return;
+
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password: password.trim() || "welcome123",
+          options: {
+            data: {
+              full_name: fullName.trim(),
+              role: assignedRole,
+              contractor_id: activeContractorId,
+            },
+          },
+        });
+
+        if (authError) {
+          setError(`Auth signup error: ${authError.message}`);
+          setLoading(false);
+          return;
+        }
+
+        if (authData?.user) {
+          userId = authData.user.id;
+          await supabase
+            .from("users")
+            .update({
+              fingerprint_id: fpId,
+              role: assignedRole,
+              contractor_id: activeContractorId,
+            })
+            .eq("id", userId);
+        }
+      } else {
+        const newWorkerData = {
+          id: userId,
+          full_name: fullName.trim(),
+          role: assignedRole,
+          fingerprint_id: fpId,
+          contractor_id: activeContractorId,
+          created_at: new Date().toISOString(),
+        };
+
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert(newWorkerData);
+
+        if (insertError) {
+          if (insertError.message.includes("fingerprint_id") || insertError.message.includes("duplicate")) {
+            setError(`Fingerprint ID #${fpId} is already assigned to another worker.`);
+          } else {
+            setError(insertError.message);
+          }
+          setLoading(false);
+          return;
+        }
       }
 
-      const createdWorker = updatedUser || {
+      const createdUser = {
         id: userId,
         full_name: fullName.trim(),
-        role: role,
+        role: assignedRole,
         fingerprint_id: fpId,
+        contractor_id: activeContractorId,
+        email: email.trim() || null,
+        password: isWebAccount ? (password.trim() || "welcome123") : null,
       };
 
-      setSuccessInfo(createdWorker);
-      onWorkerAdded(createdWorker);
+      setSuccessInfo(createdUser);
+      onWorkerAdded(createdUser);
       setLoading(false);
     } catch (err) {
-      setError(err.message || "Failed to register worker.");
+      setError(err.message || "Failed to register member.");
       setLoading(false);
     }
   };
@@ -119,29 +152,37 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div>
-            <h3>Register New Worker</h3>
-            <p>Onboard worker identity and assign fingerprint slot ID</p>
+            <h3>Register Team Member</h3>
+            <p>Onboard site workers or supervisors to your company</p>
           </div>
           <button className="modal-close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
 
-        {/* Post-Submit Confirmation Banner */}
         {successInfo ? (
           <div className="success-banner">
             <div className="success-icon">✅</div>
             <div className="success-body">
-              <h4>Worker Successfully Registered!</h4>
+              <h4>{successInfo.role === "supervisor" ? "Supervisor Registered!" : "Worker Registered!"}</h4>
               <p>
-                <b>{successInfo.full_name}</b> is assigned to <b>Fingerprint Slot #{successInfo.fingerprint_id}</b>.
+                <b>{successInfo.full_name}</b> has been onboarded as <b>{successInfo.role.toUpperCase()}</b>.
               </p>
-              <div className="next-step-box">
-                <b>📌 Action Required on Site:</b><br />
-                Enroll finger slot <b>#{successInfo.fingerprint_id}</b> on the physical R307 sensor for {successInfo.full_name}.
-              </div>
+
+              {successInfo.email ? (
+                <div className="credentials-box">
+                  <b>🔑 Web Login Credentials:</b><br />
+                  <span>Email: <code>{successInfo.email}</code></span><br />
+                  <span>Password: <code>{successInfo.password}</code></span>
+                </div>
+              ) : (
+                <div className="next-step-box">
+                  <b>📌 Action Required on Site:</b><br />
+                  Enroll finger slot <b>#{successInfo.fingerprint_id}</b> on the physical R307 sensor for {successInfo.full_name}.
+                </div>
+              )}
             </div>
-            <button className="btn-done" onClick={onClose}>
+            <button className="btn-done" onClick={onClose} style={{ marginTop: "1rem" }}>
               Done
             </button>
           </div>
@@ -151,8 +192,8 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
               <div className="modal-error">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                  <line x1="12" y1="8" x2="12" />
+                  <line x1="12" y1="16" x2="12.01" />
                 </svg>
                 {error}
               </div>
@@ -171,27 +212,23 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
               />
             </div>
 
-            <div className="form-field">
-              <label htmlFor="email">
-                Email Address <span className="label-optional">(Optional — for Web Portal login)</span>
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="ramesh@company.com (leave blank if scan-only)"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
             <div className="form-row">
               <div className="form-field">
-                <label htmlFor="role">Role</label>
-                <select id="role" value={role} onChange={(e) => setRole(e.target.value)}>
-                  <option value="worker">Worker</option>
-                  <option value="supervisor">Supervisor</option>
-                  <option value="contractor">Contractor</option>
-                </select>
+                <label htmlFor="role">Assigned Role</label>
+                {isSupervisor ? (
+                  <input
+                    type="text"
+                    value="Worker"
+                    disabled
+                    className="read-only-role"
+                    title="Supervisors can only onboard Workers"
+                  />
+                ) : (
+                  <select id="role" value={role} onChange={(e) => setRole(e.target.value)}>
+                    <option value="worker">Worker (Site Scan)</option>
+                    <option value="supervisor">Supervisor (Web Access)</option>
+                  </select>
+                )}
               </div>
 
               <div className="form-field">
@@ -200,7 +237,7 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
                   id="fingerprintId"
                   type="number"
                   min="1"
-                  placeholder="e.g. 7"
+                  placeholder="e.g. 10"
                   value={fingerprintId}
                   onChange={(e) => setFingerprintId(e.target.value)}
                   required
@@ -208,18 +245,49 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
               </div>
             </div>
 
-            <div className="modal-hint">
-              <span>
-                💡 <b>Auto-suggested ID: #{fingerprintId || "?"}</b> (Next available slot). Unique constraint enforced in Supabase.
-              </span>
-            </div>
+            {(role === "supervisor" || email.length > 0) && (
+              <div className="web-login-section">
+                <div className="web-login-title">🔑 Web Portal Credentials</div>
+                
+                <div className="form-field">
+                  <label htmlFor="email">Work Email Address {role === "supervisor" ? "*" : "(Optional)"}</label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="supervisor@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required={role === "supervisor"}
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="password">Initial Password</label>
+                  <input
+                    id="password"
+                    type="text"
+                    placeholder="welcome123"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {role === "worker" && email.length === 0 && (
+              <div className="modal-hint">
+                <span>
+                  💡 <b>Scan-only Worker:</b> Does not require web login. Enrolls finger slot <b>#{fingerprintId || "?"}</b> on physical R307 sensor.
+                </span>
+              </div>
+            )}
 
             <div className="modal-actions">
               <button type="button" className="btn-cancel" onClick={onClose} disabled={loading}>
                 Cancel
               </button>
               <button type="submit" className="btn-submit" disabled={loading}>
-                {loading ? <span className="btn-spinner" /> : "Register Worker"}
+                {loading ? <span className="btn-spinner" /> : "Register Member"}
               </button>
             </div>
           </form>

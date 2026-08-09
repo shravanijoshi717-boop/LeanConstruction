@@ -5,11 +5,13 @@ import AttendanceTable from "../components/AttendanceTable";
 import AddWorkerModal from "../components/AddWorkerModal";
 import "./Dashboard.css";
 
-export default function SupervisorDash() {
+export default function SupervisorDash({ userProfile }) {
   const [attendance, setAttendance] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const activeContractorId = userProfile?.contractor_id || userProfile?.id;
 
   useEffect(() => {
     fetchData();
@@ -20,7 +22,9 @@ export default function SupervisorDash() {
         { event: "*", schema: "public", table: "attendance" },
         (payload) => {
           if (payload.eventType === "INSERT") {
-            setAttendance((prev) => [payload.new, ...prev]);
+            if (!activeContractorId || payload.new.contractor_id === activeContractorId) {
+              setAttendance((prev) => [payload.new, ...prev]);
+            }
           } else if (payload.eventType === "UPDATE") {
             setAttendance((prev) =>
               prev.map((a) => (a.id === payload.new.id ? payload.new : a))
@@ -35,13 +39,21 @@ export default function SupervisorDash() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [activeContractorId]);
 
   const fetchData = async () => {
     setLoading(true);
+    let attendanceQuery = supabase.from("attendance").select("*").order("check_in", { ascending: false });
+    let usersQuery = supabase.from("users").select("*");
+
+    if (activeContractorId) {
+      attendanceQuery = attendanceQuery.eq("contractor_id", activeContractorId);
+      usersQuery = usersQuery.eq("contractor_id", activeContractorId);
+    }
+
     const [attendanceRes, usersRes] = await Promise.all([
-      supabase.from("attendance").select("*").order("check_in", { ascending: false }),
-      supabase.from("users").select("*"),
+      attendanceQuery,
+      usersQuery,
     ]);
 
     if (attendanceRes.data) setAttendance(attendanceRes.data);
@@ -111,6 +123,9 @@ export default function SupervisorDash() {
         onClose={() => setIsAddModalOpen(false)}
         onWorkerAdded={handleWorkerAdded}
         existingUsers={users}
+        currentUserRole="supervisor"
+        currentUserId={userProfile?.id}
+        contractorId={activeContractorId}
       />
     </div>
   );

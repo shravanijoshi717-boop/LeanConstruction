@@ -120,23 +120,58 @@
 
 .login-form-wrapper {
   width: 100%;
-  max-width: 370px;
+  max-width: 380px;
 }
 
-.form-header {
+/* Auth Tabs */
+.auth-tab-group {
+  display: flex;
+  background: #fafafa;
+  border: 1px solid #f4f4f5;
+  border-radius: 8px;
+  padding: 0.25rem;
   margin-bottom: 1.5rem;
 }
 
+.auth-tab {
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.auth-tab:hover {
+  color: #09090b;
+}
+
+.auth-tab.active {
+  background: #ffffff;
+  color: #09090b;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.form-header {
+  margin-bottom: 1.25rem;
+}
+
 .form-header h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #09090b;
   letter-spacing: -0.02em;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
 }
 
 .form-header p {
-  font-size: 0.875rem;
+  font-size: 0.825rem;
   color: #71717a;
 }
 
@@ -153,70 +188,21 @@
   gap: 0.5rem;
 }
 
-/* Quick Roles / Tap to fill */
-.quick-roles {
-  margin-bottom: 1.5rem;
-  background: #fafafa;
-  border: 1px solid #f4f4f5;
-  border-radius: 10px;
-  padding: 0.85rem;
-}
-
-.quick-roles-title {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #71717a;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 0.6rem;
-}
-
-.role-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.role-btn {
-  flex: 1;
-  padding: 0.45rem 0.5rem;
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
-  border-radius: 6px;
-  font-size: 0.775rem;
-  font-weight: 500;
-  color: #27272a;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: center;
-}
-
-.role-btn:hover {
-  border-color: #09090b;
-  color: #09090b;
-}
-
-.role-btn.active {
-  background: #09090b;
-  border-color: #09090b;
-  color: #ffffff;
-}
-
 .field {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.15rem;
 }
 
 .field label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.775rem;
   font-weight: 500;
   color: #18181b;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.35rem;
 }
 
 .field input {
   width: 100%;
-  padding: 0.7rem 0.85rem;
+  padding: 0.65rem 0.8rem;
   background: #ffffff;
   border: 1px solid #e4e4e7;
   border-radius: 8px;
@@ -237,7 +223,7 @@
 
 .login-btn {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.7rem;
   background: #09090b;
   color: #ffffff;
   border: none;
@@ -272,23 +258,72 @@
 
 .demo-hint {
   text-align: center;
-  margin-top: 1.25rem;
-  font-size: 0.775rem;
-  color: #71717a;
-}
-
-.demo-hint code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  margin-top: 1.15rem;
   font-size: 0.75rem;
-  background: #f4f4f5;
-  color: #18181b;
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
+  color: #71717a;
+  line-height: 1.4;
 }
 
 /* ============================================
-   MOBILE RESPONSIVE STYLES (< 900px)
+   Check Your Email Modal Popup
    ============================================ */
+.email-check-modal {
+  text-align: center;
+  padding: 2.25rem 2rem;
+  max-width: 400px;
+}
+
+.email-modal-icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 0.85rem;
+}
+
+.email-check-modal h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #09090b;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.email-modal-text {
+  font-size: 0.875rem;
+  color: #52525b;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.email-highlight {
+  color: #09090b;
+  word-break: break-all;
+}
+
+.email-modal-subtext {
+  font-size: 0.775rem;
+  color: #71717a;
+  line-height: 1.45;
+  margin-bottom: 1.5rem;
+}
+
+.btn-modal-action {
+  width: 100%;
+  padding: 0.7rem;
+  background: #09090b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-modal-action:hover {
+  background: #27272a;
+}
+
+/* Mobile Responsive */
 @media (max-width: 900px) {
   .login-page {
     flex-direction: column;
@@ -298,20 +333,16 @@
 
   .login-hero-panel {
     flex: none;
-    height: 180px;
+    height: 170px;
     position: relative;
   }
 
   .hero-content {
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
     justify-content: center;
   }
 
-  .hero-copy {
-    display: none;
-  }
-
-  .hero-footer {
+  .hero-copy, .hero-footer {
     display: none;
   }
 
@@ -345,17 +376,12 @@
   }
 
   .form-header h2 {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
   }
 
   .field input {
-    font-size: 1rem; /* Prevent iOS zoom */
+    font-size: 1rem;
     padding: 0.75rem;
-  }
-
-  .role-btn {
-    padding: 0.6rem 0.4rem;
-    font-size: 0.8rem;
   }
 
   .login-btn {
