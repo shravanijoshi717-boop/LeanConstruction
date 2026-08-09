@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import StatsBar from "../components/StatsBar";
 import AttendanceTable from "../components/AttendanceTable";
+import AddWorkerModal from "../components/AddWorkerModal";
 import "./Dashboard.css";
 
 export default function SupervisorDash() {
   const [attendance, setAttendance] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -39,13 +41,19 @@ export default function SupervisorDash() {
     setLoading(true);
     const [attendanceRes, usersRes] = await Promise.all([
       supabase.from("attendance").select("*").order("check_in", { ascending: false }),
-      supabase.from("users").select("*").eq("role", "worker"),
+      supabase.from("users").select("*"),
     ]);
 
     if (attendanceRes.data) setAttendance(attendanceRes.data);
     if (usersRes.data) setUsers(usersRes.data);
     setLoading(false);
   };
+
+  const handleWorkerAdded = (newUser) => {
+    setUsers((prev) => [...prev, newUser]);
+  };
+
+  const workerList = users.filter((u) => u.role === "worker");
 
   if (loading) {
     return (
@@ -68,9 +76,17 @@ export default function SupervisorDash() {
             </span>
           </div>
         </div>
+
+        <button className="add-worker-btn" onClick={() => setIsAddModalOpen(true)}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add Worker
+        </button>
       </div>
 
-      <StatsBar attendance={attendance} totalWorkers={users.length} />
+      <StatsBar attendance={attendance} totalWorkers={workerList.length} />
 
       <div className="supervisor-callout">
         <div className="callout-icon">📋</div>
@@ -89,6 +105,13 @@ export default function SupervisorDash() {
         </div>
         <AttendanceTable attendance={attendance} users={users} showWorkerName={true} />
       </div>
+
+      <AddWorkerModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onWorkerAdded={handleWorkerAdded}
+        existingUsers={users}
+      />
     </div>
   );
 }

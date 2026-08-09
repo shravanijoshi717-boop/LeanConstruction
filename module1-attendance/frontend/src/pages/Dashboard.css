@@ -45,6 +45,25 @@
   flex-shrink: 0;
 }
 
+.add-worker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.95rem;
+  background: #09090b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.add-worker-btn:hover {
+  background: #27272a;
+}
+
 .section-header {
   margin-bottom: 0.85rem;
   display: flex;
@@ -149,6 +168,12 @@
 
   .dashboard-title-group h2 {
     font-size: 1.25rem;
+  }
+
+  .add-worker-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.65rem;
   }
 
   .worker-today-card {
