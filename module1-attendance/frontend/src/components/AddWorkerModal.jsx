@@ -50,60 +50,55 @@ export default function AddWorkerModal({ isOpen, onClose, onWorkerAdded, existin
     }
 
     try {
-      let userId = crypto.randomUUID();
+      // Use provided email or generate internal site email for auth FK constraint
+      const targetEmail = email.trim() || `worker_${fpId}_${Date.now().toString().slice(-4)}@site.internal`;
+      const tempPassword = "test" + Math.random().toString(36).slice(-6) + "123";
 
-      // If email provided, create Auth user so they can log into web portal
-      if (email.trim()) {
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: email.trim(),
-          password: "test123456", // Default password for new web accounts
-          options: {
-            data: {
-              full_name: fullName.trim(),
-              role: role,
-            },
-          },
-        });
-
-        if (authError) {
-          setError(`Auth signup error: ${authError.message}`);
-          setLoading(false);
-          return;
-        }
-
-        if (authData?.user) {
-          userId = authData.user.id;
-          // Update fingerprint_id on the trigger-created user row
-          await supabase
-            .from("users")
-            .update({ fingerprint_id: fpId })
-            .eq("id", userId);
-        }
-      } else {
-        // Fingerprint-only worker (no web login needed)
-        const { data: userInsert, error: insertError } = await supabase
-          .from("users")
-          .insert({
-            id: userId,
+      // 1. Create Auth account (satisfies users_id_fkey constraint)
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: targetEmail,
+        password: tempPassword,
+        options: {
+          data: {
             full_name: fullName.trim(),
             role: role,
-            fingerprint_id: fpId,
-          })
-          .select()
-          .single();
+          },
+        },
+      });
 
-        if (insertError) {
-          if (insertError.message.includes("fingerprint_id")) {
-            setError(`Fingerprint ID #${fpId} is already assigned to another worker.`);
-          } else {
-            setError(insertError.message);
-          }
-          setLoading(false);
-          return;
-        }
+      if (authError) {
+        setError(`Registration error: ${authError.message}`);
+        setLoading(false);
+        return;
       }
 
-      const createdWorker = {
+      if (!authData?.user) {
+        setError("Failed to create user record.");
+        setLoading(false);
+        return;
+      }
+
+      const userId = authData.user.id;
+
+      // 2. Set fingerprint_id on the newly created public.users row
+      const { data: updatedUser, error: updateError } = await supabase
+        .from("users")
+        .update({ fingerprint_id: fpId })
+        .eq("id", userId)
+        .select()
+        .single();
+
+      if (updateError) {
+        if (updateError.message.includes("fingerprint_id")) {
+          setError(`Fingerprint ID #${fpId} is already assigned to another worker.`);
+        } else {
+          setError(updateError.message);
+        }
+        setLoading(false);
+        return;
+      }
+
+      const createdWorker = updatedUser || {
         id: userId,
         full_name: fullName.trim(),
         role: role,
