@@ -1,3 +1,7 @@
+.attendance-view {
+  width: 100%;
+}
+
 .table-card {
   background: #ffffff;
   border: 1px solid #e4e4e7;
@@ -8,12 +12,10 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .data-table {
   width: 100%;
-  min-width: 600px;
   border-collapse: collapse;
   text-align: left;
 }
@@ -27,7 +29,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-bottom: 1px solid #e4e4e7;
-  white-space: nowrap;
 }
 
 .data-table td {
@@ -35,7 +36,6 @@
   font-size: 0.85rem;
   color: #18181b;
   border-bottom: 1px solid #f4f4f5;
-  white-space: nowrap;
 }
 
 .data-table tr:last-child td {
@@ -52,14 +52,19 @@
   gap: 0.65rem;
 }
 
+.worker-meta {
+  display: flex;
+  flex-direction: column;
+}
+
 .worker-avatar {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #f4f4f5;
   border: 1px solid #e4e4e7;
   color: #18181b;
-  font-size: 0.75rem;
+  font-size: 0.775rem;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -73,7 +78,8 @@
 }
 
 .col-date {
-  color: #52525b;
+  font-size: 0.775rem;
+  color: #71717a;
 }
 
 .col-time {
@@ -138,12 +144,9 @@
 }
 
 /* Empty State */
-.table-empty {
+.table-card .empty-state {
   text-align: center;
-  padding: 3.5rem 1.5rem !important;
-}
-
-.empty-state {
+  padding: 3.5rem 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -175,10 +178,66 @@
   margin: 0;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Stacked Cards Layout */
+.mobile-cards-wrapper {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobile-record-card {
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.mobile-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid #f4f4f5;
+}
+
+.mobile-card-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.mobile-detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.detail-value {
+  font-size: 0.8rem;
+}
+
+/* View Switcher at 640px */
 @media (max-width: 640px) {
-  .data-table th,
-  .data-table td {
-    padding: 0.65rem 0.85rem;
+  .desktop-table-only {
+    display: none;
+  }
+
+  .mobile-cards-wrapper {
+    display: flex;
+  }
+}
+
+@media (max-width: 380px) {
+  .mobile-card-details {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
   }
 }
