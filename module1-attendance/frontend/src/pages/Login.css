@@ -1,0 +1,365 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  background: #ffffff;
+}
+
+/* Left Hero Panel (Desktop) */
+.login-hero-panel {
+  flex: 1.1;
+  background: #09090b;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-image: url('/assets/hero_bg.png');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.7) contrast(1.1);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(9, 9, 11, 0.75) 0%,
+    rgba(9, 9, 11, 0.4) 40%,
+    rgba(9, 9, 11, 0.9) 100%
+  );
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  padding: 3.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  color: #09090b;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.02em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.brand-text h1 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.brand-text p {
+  font-size: 0.775rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.hero-copy {
+  max-width: 460px;
+}
+
+.hero-copy h2 {
+  font-size: 2.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.hero-copy p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.hero-footer {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+/* Right Form Panel */
+.login-form-panel {
+  flex: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background: #ffffff;
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 370px;
+}
+
+.form-header {
+  margin-bottom: 1.5rem;
+}
+
+.form-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #09090b;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.form-header p {
+  font-size: 0.875rem;
+  color: #71717a;
+}
+
+.login-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Quick Roles / Tap to fill */
+.quick-roles {
+  margin-bottom: 1.5rem;
+  background: #fafafa;
+  border: 1px solid #f4f4f5;
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.quick-roles-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.6rem;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: #27272a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.role-btn:hover {
+  border-color: #09090b;
+  color: #09090b;
+}
+
+.role-btn.active {
+  background: #09090b;
+  border-color: #09090b;
+  color: #ffffff;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #18181b;
+  margin-bottom: 0.4rem;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #09090b;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.field input::placeholder {
+  color: #a1a1aa;
+}
+
+.field input:focus {
+  border-color: #09090b;
+  box-shadow: 0 0 0 1px #09090b;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #09090b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: #27272a;
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.demo-hint {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.775rem;
+  color: #71717a;
+}
+
+.demo-hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  background: #f4f4f5;
+  color: #18181b;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES (< 900px)
+   ============================================ */
+@media (max-width: 900px) {
+  .login-page {
+    flex-direction: column;
+    min-height: 100vh;
+    background: #fafafa;
+  }
+
+  .login-hero-panel {
+    flex: none;
+    height: 180px;
+    position: relative;
+  }
+
+  .hero-content {
+    padding: 1.5rem;
+    justify-content: center;
+  }
+
+  .hero-copy {
+    display: none;
+  }
+
+  .hero-footer {
+    display: none;
+  }
+
+  .brand-header {
+    gap: 0.75rem;
+  }
+
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .brand-text h1 {
+    font-size: 1.15rem;
+  }
+
+  .brand-text p {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .login-form-panel {
+    flex: 1;
+    padding: 1.5rem 1.25rem 2.5rem;
+    align-items: flex-start;
+  }
+
+  .login-form-wrapper {
+    max-width: 100%;
+  }
+
+  .form-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .field input {
+    font-size: 1rem; /* Prevent iOS zoom */
+    padding: 0.75rem;
+  }
+
+  .role-btn {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .login-btn {
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+}
