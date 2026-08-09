@@ -16,7 +16,7 @@
   border: 1px solid #e4e4e7;
   border-radius: 12px;
   width: 100%;
-  max-width: 440px;
+  max-width: 460px;
   padding: 1.5rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
@@ -79,6 +79,12 @@
   font-weight: 500;
   color: #18181b;
   margin-bottom: 0.35rem;
+}
+
+.label-optional {
+  font-weight: 400;
+  color: #71717a;
+  font-size: 0.725rem;
 }
 
 .form-field input,
@@ -161,6 +167,65 @@
 .btn-cancel:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Post-Submit Confirmation Banner */
+.success-banner {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.success-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.success-body h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #166534;
+  margin-bottom: 0.35rem;
+}
+
+.success-body p {
+  font-size: 0.85rem;
+  color: #15803d;
+  margin-bottom: 0.85rem;
+}
+
+.next-step-box {
+  background: #ffffff;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  color: #166534;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.btn-done {
+  width: 100%;
+  padding: 0.65rem;
+  background: #166534;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.btn-done:hover {
+  background: #14532d;
 }
 
 @keyframes fadeIn {
