@@ -401,12 +401,51 @@ useEffect(() => {
     story.append(w_table)
     story.append(Spacer(1, 15))
 
-    # Section 9: Conclusion
-    story.append(Paragraph("9. Conclusion & Next Steps (Module 2+)", h1_style))
+    # Section 9: Manual Attendance Edit, Audit Trail & RBAC
+    story.append(Paragraph("9. Manual Attendance Edit, Audit Trail & RBAC Security", h1_style))
+    story.append(Paragraph(
+        "To handle site realities (e.g., sensor misreads, forgotten check-outs) without compromising data integrity for payroll, "
+        "the system includes a manual attendance correction feature backed by PostgreSQL RPC procedures and an unalterable audit log.", body_style
+    ))
+
+    audit_features = [
+        ("Immutable Audit Log (attendance_edit_log)", "Captures <code>attendance_id</code>, <code>edited_by</code>, <code>field_changed</code>, <code>old_value</code>, <code>new_value</code>, <code>reason</code> (NOT NULL), and <code>edited_at</code>."),
+        ("Atomic PostgreSQL RPC (edit_attendance_record)", "Executes permission validation, mandatory non-empty reason check, diff generation, and <code>attendance</code> row update in a single atomic transaction."),
+        ("Hardware Provenance Preservation", "Manual edits update <code>is_manually_edited = true</code> and timestamp metadata, but <b>never overwrite the original scanner device_id</b>."),
+        ("Strict Role Boundaries", "• <b>Contractors:</b> Can edit any Worker/Supervisor and delete records (cascading audit log purge).<br/>"
+                                   "• <b>Supervisors:</b> Can edit Workers on their site only with mandatory reason. Blocked from editing Supervisors/Contractors or deleting rows.<br/>"
+                                   "• <b>Workers:</b> Strictly blocked at the database level via RPC checks and RLS.")
+    ]
+
+    for title, desc in audit_features:
+        story.append(Paragraph(f"• <b>{title}:</b> {desc}", bullet_style))
+
+    story.append(Spacer(1, 10))
+
+    # Section 10: Monthly Payroll Automation Engine
+    story.append(Paragraph("10. Automated Monthly Payroll Calculation Engine", h1_style))
+    story.append(Paragraph(
+        "The dashboard automatically computes monthly payroll payouts from live attendance logs, removing manual calculation overhead for contractors.", body_style
+    ))
+
+    payroll_rules = [
+        ("Configurable Wage Rates (wage_rates Table)", "Contractors can set and update daily wage rates per role (e.g., Worker ₹300/day, Supervisor ₹350/day) at any time."),
+        ("Full Absence Rule", "Each full day absent directly deducts one full day's wage."),
+        ("Prorated Late Entry Rule", "Every 3 late entries equal 1 day of wage deduction. Scales proportionally: <code>late_deduction_days = late_count / 3</code>."),
+        ("Net Payment Formula", "<code>Final Payment = max(0, (working_days - absent_days - (late_count / 3))) × daily_wage</code>")
+    ]
+
+    for title, desc in payroll_rules:
+        story.append(Paragraph(f"• <b>{title}:</b> {desc}", bullet_style))
+
+    story.append(Spacer(1, 15))
+
+    # Section 11: Conclusion
+    story.append(Paragraph("11. Conclusion & Next Steps (Module 2+)", h1_style))
     story.append(Paragraph(
         "Module 1 successfully establishes a complete end-to-end attendance pipeline: physical fingerprint scan ➔ "
         "ESP32 transmission ➔ Supabase Edge authentication ➔ PostgreSQL relational trigger processing ➔ "
-        "Vercel React Realtime web dashboard updates.<br/><br/>"
+        "Vercel React Realtime web dashboard updates, manual audit logging, and automated monthly payroll calculation.<br/><br/>"
         "<b>Upcoming Enhancements for Module 2:</b><br/>"
         "• <b>Automated End-of-Day Absentee Cron Job:</b> Supabase scheduled Edge Function to mark non-checked-in workers as absent.<br/>"
         "• <b>Remote Over-The-Air Fingerprint Registration:</b> Enabling supervisors to put the ESP32 into enrollment mode directly from the web app.<br/>"

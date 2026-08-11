@@ -82,8 +82,8 @@ export default function WorkerDash({ user }) {
           <div className="worker-today-grid">
             <div>
               <div className="today-metric-label">Status</div>
-              <span className={`status-pill status-${todayRecord.status}`}>
-                {todayRecord.status}
+              <span className={`status-pill status-${(todayRecord.status || '').toLowerCase()}`}>
+                {(todayRecord.status || '').charAt(0).toUpperCase() + (todayRecord.status || '').slice(1).toLowerCase()}
               </span>
             </div>
             <div>

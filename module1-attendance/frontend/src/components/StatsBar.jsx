@@ -8,10 +8,16 @@ export default function StatsBar({ attendance, totalWorkers }) {
     return checkInDate === today;
   });
 
-  // Present Today = Anyone who checked in today (both on-time and late)
-  const totalPresentToday = todayRecords.length;
-  const lateCount = todayRecords.filter((a) => a.status === "late").length;
-  const onTimeCount = todayRecords.filter((a) => a.status === "present").length;
+  // Normalize status to lowercase for case-insensitive comparison
+  const getStatus = (a) => (a.status || "").toLowerCase();
+
+  // Present Today = Anyone who checked in today with status "present" or "late"
+  const presentOrLateRecords = todayRecords.filter(
+    (a) => getStatus(a) === "present" || getStatus(a) === "late"
+  );
+  const totalPresentToday = presentOrLateRecords.length;
+  const lateCount = todayRecords.filter((a) => getStatus(a) === "late").length;
+  const onTimeCount = todayRecords.filter((a) => getStatus(a) === "present").length;
   const absentCount = Math.max(0, totalWorkers - totalPresentToday);
 
   const stats = [

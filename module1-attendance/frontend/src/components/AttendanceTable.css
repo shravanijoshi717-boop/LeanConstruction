@@ -2,6 +2,84 @@
   width: 100%;
 }
 
+.table-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.table-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f4f4f5;
+  padding: 0.2rem;
+  border-radius: 8px;
+  border: 1px solid #e4e4e7;
+}
+
+.filter-tab-btn {
+  padding: 0.35rem 0.7rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-tab-btn:hover {
+  color: #09090b;
+}
+
+.filter-tab-btn.active {
+  background: #ffffff;
+  color: #09090b;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.filter-date-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-picker-label {
+  font-size: 0.75rem;
+  color: #71717a;
+  font-weight: 500;
+}
+
+.date-picker-input {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.775rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #09090b;
+  outline: none;
+  font-family: inherit;
+}
+
+.date-picker-input:focus {
+  border-color: #09090b;
+}
+
+.btn-clear-date {
+  background: transparent;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.4rem;
+}
+
 .table-card {
   background: #ffffff;
   border: 1px solid #e4e4e7;
@@ -125,13 +203,88 @@
   border: 1px solid #fecaca;
 }
 
-.active-pill {
+.status-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.edited-badge {
   display: inline-flex;
   align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.4rem;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  color: #52525b;
+  border-radius: 5px;
+  font-size: 0.675rem;
+  font-weight: 600;
+}
+
+.table-row-actions {
+  display: flex;
+  align-items: center;
   gap: 0.35rem;
-  font-size: 0.775rem;
-  color: #059669;
+}
+
+.btn-icon-edit,
+.btn-icon-delete {
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  color: #71717a;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-icon-edit:hover {
+  background: #f4f4f5;
+  color: #09090b;
+  border-color: #d4d4d8;
+}
+
+.btn-icon-delete:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.no-access-text {
+  font-size: 0.725rem;
+  color: #a1a1aa;
+  font-style: italic;
+}
+
+.mobile-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #f4f4f5;
+}
+
+.btn-action-edit,
+.btn-action-delete {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
   font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #09090b;
+}
+
+.btn-action-delete {
+  color: #b91c1c;
 }
 
 .active-dot {

@@ -16,6 +16,7 @@ export default function AddWorkerModal({
   const [password, setPassword] = useState("welcome123");
   const [role, setRole] = useState("worker");
   const [fingerprintId, setFingerprintId] = useState("");
+  const [createLogin, setCreateLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successInfo, setSuccessInfo] = useState(null);
@@ -35,12 +36,15 @@ export default function AddWorkerModal({
       setEmail("");
       setPassword("welcome123");
       setRole("worker");
+      setCreateLogin(false);
       setError(null);
       setSuccessInfo(null);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const isWebAccount = role === "supervisor" || createLogin;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,14 +66,13 @@ export default function AddWorkerModal({
     }
 
     const assignedRole = isSupervisor ? "worker" : role;
-    const isWebAccount = assignedRole === "supervisor" || email.trim().length > 0;
 
     try {
       let userId = crypto.randomUUID();
 
       if (isWebAccount) {
         if (!email.trim()) {
-          setError("Email address is required for Supervisors so they can log into the portal.");
+          setError("Email address is required to create a web portal login account.");
           setLoading(false);
           return;
         }
@@ -134,7 +137,7 @@ export default function AddWorkerModal({
         role: assignedRole,
         fingerprint_id: fpId,
         contractor_id: activeContractorId,
-        email: email.trim() || null,
+        email: isWebAccount ? email.trim() : null,
         password: isWebAccount ? (password.trim() || "welcome123") : null,
       };
 
@@ -173,7 +176,7 @@ export default function AddWorkerModal({
                 <div className="credentials-box">
                   <b>🔑 Web Login Credentials:</b><br />
                   <span>Email: <code>{successInfo.email}</code></span><br />
-                  <span>Password: <code>{successInfo.password}</code></span>
+                  <span>Temporary Password: <code>{successInfo.password}</code></span>
                 </div>
               ) : (
                 <div className="next-step-box">
@@ -224,15 +227,25 @@ export default function AddWorkerModal({
                     title="Supervisors can only onboard Workers"
                   />
                 ) : (
-                  <select id="role" value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="worker">Worker (Site Scan)</option>
-                    <option value="supervisor">Supervisor (Web Access)</option>
+                  <select
+                    id="role"
+                    value={role}
+                    onChange={(e) => {
+                      const newRole = e.target.value;
+                      setRole(newRole);
+                      if (newRole === "supervisor") {
+                        setCreateLogin(true);
+                      }
+                    }}
+                  >
+                    <option value="worker">Worker (Site Member)</option>
+                    <option value="supervisor">Supervisor (Web Access Required)</option>
                   </select>
                 )}
               </div>
 
               <div className="form-field">
-                <label htmlFor="fingerprintId">Assigned Fingerprint ID *</label>
+                <label htmlFor="fingerprintId">Assigned Fingerprint Slot ID *</label>
                 <input
                   id="fingerprintId"
                   type="number"
@@ -245,24 +258,43 @@ export default function AddWorkerModal({
               </div>
             </div>
 
-            {(role === "supervisor" || email.length > 0) && (
+            {/* Optional Login Toggle Checkbox for Workers */}
+            {role === "worker" && (
+              <div className="create-login-checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={createLogin}
+                    onChange={(e) => setCreateLogin(e.target.checked)}
+                  />
+                  <span className="checkbox-custom" />
+                  <div className="checkbox-text">
+                    <strong>Also create web dashboard login for this worker?</strong>
+                    <p>Gives worker access to their personal portal via email & password</p>
+                  </div>
+                </label>
+              </div>
+            )}
+
+            {/* Web Credentials Fields */}
+            {isWebAccount && (
               <div className="web-login-section">
                 <div className="web-login-title">🔑 Web Portal Credentials</div>
-                
+
                 <div className="form-field">
-                  <label htmlFor="email">Work Email Address {role === "supervisor" ? "*" : "(Optional)"}</label>
+                  <label htmlFor="email">Work Email Address *</label>
                   <input
                     id="email"
                     type="email"
-                    placeholder="supervisor@company.com"
+                    placeholder="worker@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required={role === "supervisor"}
+                    required
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="password">Initial Password</label>
+                  <label htmlFor="password">Temporary Initial Password</label>
                   <input
                     id="password"
                     type="text"
@@ -274,10 +306,10 @@ export default function AddWorkerModal({
               </div>
             )}
 
-            {role === "worker" && email.length === 0 && (
+            {role === "worker" && !createLogin && (
               <div className="modal-hint">
                 <span>
-                  💡 <b>Scan-only Worker:</b> Does not require web login. Enrolls finger slot <b>#{fingerprintId || "?"}</b> on physical R307 sensor.
+                  💡 <b>Scan-Only Worker:</b> Does not require web login. Enrolls finger slot <b>#{fingerprintId || "?"}</b> on physical R307 sensor.
                 </span>
               </div>
             )}

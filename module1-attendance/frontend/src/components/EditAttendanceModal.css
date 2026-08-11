@@ -1,0 +1,85 @@
+.edit-modal-content {
+  max-width: 480px;
+}
+
+.edit-worker-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  margin-bottom: 1.15rem;
+}
+
+.edit-worker-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #d4d4d8;
+  color: #09090b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.edit-worker-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.edit-worker-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #09090b;
+}
+
+.edit-device-badge {
+  font-size: 0.7rem;
+  color: #71717a;
+}
+
+.edit-device-badge code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #e4e4e7;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  color: #27272a;
+}
+
+.required-tag {
+  font-size: 0.7rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+textarea#editReason {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  color: #09090b;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s ease;
+}
+
+textarea#editReason:focus {
+  border-color: #09090b;
+  box-shadow: 0 0 0 1px #09090b;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #71717a;
+}

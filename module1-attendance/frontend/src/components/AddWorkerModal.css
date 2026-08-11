@@ -99,6 +99,44 @@
   border-color: #09090b;
 }
 
+/* Optional login checkbox */
+.create-login-checkbox-group {
+  margin-bottom: 1.15rem;
+  padding: 0.75rem 0.85rem;
+  background: #fafafa;
+  border: 1px solid #f4f4f5;
+  border-radius: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 0.15rem;
+  accent-color: #09090b;
+  cursor: pointer;
+}
+
+.checkbox-text strong {
+  display: block;
+  font-size: 0.825rem;
+  color: #09090b;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.checkbox-text p {
+  font-size: 0.725rem;
+  color: #71717a;
+  margin: 0.15rem 0 0;
+}
+
 .read-only-role {
   background: #f4f4f5 !important;
   color: #71717a !important;

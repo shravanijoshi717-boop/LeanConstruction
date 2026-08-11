@@ -78,6 +78,46 @@
   letter-spacing: -0.01em;
 }
 
+.section-header-tabs {
+  margin-bottom: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f4f4f5;
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid #e4e4e7;
+}
+
+.section-tab-btn {
+  padding: 0.4rem 0.85rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.section-tab-btn:hover {
+  color: #09090b;
+}
+
+.section-tab-btn.active {
+  background: #ffffff;
+  color: #09090b;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
 /* Supervisor Callout */
 .supervisor-callout {
   background: #fcfcfd;

@@ -3,6 +3,8 @@ import { supabase } from "../lib/supabase";
 import StatsBar from "../components/StatsBar";
 import AttendanceTable from "../components/AttendanceTable";
 import AddWorkerModal from "../components/AddWorkerModal";
+import EditAttendanceModal from "../components/EditAttendanceModal";
+import AuditLogView from "../components/AuditLogView";
 import "./Dashboard.css";
 
 export default function SupervisorDash({ userProfile }) {
@@ -10,6 +12,8 @@ export default function SupervisorDash({ userProfile }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [activeTab, setActiveTab] = useState("activity"); // 'activity' | 'audit'
 
   const activeContractorId = userProfile?.contractor_id || userProfile?.id;
 
@@ -65,6 +69,12 @@ export default function SupervisorDash({ userProfile }) {
     setUsers((prev) => [...prev, newUser]);
   };
 
+  const handleRecordUpdated = (updatedRecord) => {
+    setAttendance((prev) =>
+      prev.map((a) => (a.id === updatedRecord.id ? { ...a, ...updatedRecord } : a))
+    );
+  };
+
   const workerList = users.filter((u) => u.role === "worker");
 
   if (loading) {
@@ -112,10 +122,34 @@ export default function SupervisorDash({ userProfile }) {
       </div>
 
       <div className="dash-section">
-        <div className="section-header">
-          <h3>Workforce On-Site Status</h3>
+        <div className="section-header-tabs">
+          <div className="tab-buttons">
+            <button
+              className={`section-tab-btn ${activeTab === "activity" ? "active" : ""}`}
+              onClick={() => setActiveTab("activity")}
+            >
+              📋 Workforce On-Site Status
+            </button>
+            <button
+              className={`section-tab-btn ${activeTab === "audit" ? "active" : ""}`}
+              onClick={() => setActiveTab("audit")}
+            >
+              📜 Your Edit History
+            </button>
+          </div>
         </div>
-        <AttendanceTable attendance={attendance} users={users} showWorkerName={true} />
+
+        {activeTab === "activity" ? (
+          <AttendanceTable
+            attendance={attendance}
+            users={users}
+            showWorkerName={true}
+            userRole="supervisor"
+            onEditRecord={(rec) => setEditingRecord(rec)}
+          />
+        ) : (
+          <AuditLogView userProfile={userProfile} />
+        )}
       </div>
 
       <AddWorkerModal
@@ -126,6 +160,14 @@ export default function SupervisorDash({ userProfile }) {
         currentUserRole="supervisor"
         currentUserId={userProfile?.id}
         contractorId={activeContractorId}
+      />
+
+      <EditAttendanceModal
+        isOpen={!!editingRecord}
+        onClose={() => setEditingRecord(null)}
+        record={editingRecord}
+        users={users}
+        onRecordUpdated={handleRecordUpdated}
       />
     </div>
   );

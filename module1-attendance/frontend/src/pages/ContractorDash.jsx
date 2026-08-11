@@ -3,7 +3,10 @@ import { supabase } from "../lib/supabase";
 import StatsBar from "../components/StatsBar";
 import AttendanceTable from "../components/AttendanceTable";
 import WeeklyTrendChart from "../components/WeeklyTrendChart";
+import PayrollReport from "../components/PayrollReport";
 import AddWorkerModal from "../components/AddWorkerModal";
+import EditAttendanceModal from "../components/EditAttendanceModal";
+import AuditLogView from "../components/AuditLogView";
 import "./Dashboard.css";
 
 export default function ContractorDash({ userProfile }) {
@@ -11,6 +14,8 @@ export default function ContractorDash({ userProfile }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [activeTab, setActiveTab] = useState("activity"); // 'activity' | 'audit'
 
   const activeContractorId = userProfile?.id;
 
@@ -66,6 +71,33 @@ export default function ContractorDash({ userProfile }) {
     setUsers((prev) => [...prev, newUser]);
   };
 
+  const handleRecordUpdated = (updatedRecord) => {
+    setAttendance((prev) =>
+      prev.map((a) => (a.id === updatedRecord.id ? { ...a, ...updatedRecord } : a))
+    );
+  };
+
+  const handleDeleteRecord = async (record) => {
+    if (!window.confirm(`Are you sure you want to delete this attendance record for ${getUserName(record.user_id)}?`)) {
+      return;
+    }
+
+    const { error } = await supabase.rpc("delete_attendance_record", {
+      p_attendance_id: record.id,
+    });
+
+    if (error) {
+      alert(`Failed to delete record: ${error.message}`);
+    } else {
+      setAttendance((prev) => prev.filter((a) => a.id !== record.id));
+    }
+  };
+
+  const getUserName = (userId) => {
+    const u = users.find((usr) => usr.id === userId);
+    return u?.full_name || "Worker";
+  };
+
   const workerList = users.filter((u) => u.role === "worker");
 
   if (loading) {
@@ -101,14 +133,46 @@ export default function ContractorDash({ userProfile }) {
 
       <StatsBar attendance={attendance} totalWorkers={workerList.length} />
 
+      <WeeklyTrendChart attendance={attendance} totalWorkers={workerList.length} />
+
+      {/* Main Tab Toggle */}
       <div className="dash-section">
-        <div className="section-header">
-          <h3>Recent Attendance Activity</h3>
+        <div className="section-header-tabs">
+          <div className="tab-buttons">
+            <button
+              className={`section-tab-btn ${activeTab === "activity" ? "active" : ""}`}
+              onClick={() => setActiveTab("activity")}
+            >
+              📋 Recent Attendance Activity
+            </button>
+            <button
+              className={`section-tab-btn ${activeTab === "audit" ? "active" : ""}`}
+              onClick={() => setActiveTab("audit")}
+            >
+              📜 Edit History & Audit Trail
+            </button>
+          </div>
         </div>
-        <AttendanceTable attendance={attendance} users={users} showWorkerName={true} />
+
+        {activeTab === "activity" ? (
+          <AttendanceTable
+            attendance={attendance}
+            users={users}
+            showWorkerName={true}
+            userRole="contractor"
+            onEditRecord={(rec) => setEditingRecord(rec)}
+            onDeleteRecord={handleDeleteRecord}
+          />
+        ) : (
+          <AuditLogView userProfile={userProfile} />
+        )}
       </div>
 
-      <WeeklyTrendChart attendance={attendance} totalWorkers={workerList.length} />
+      <PayrollReport
+        attendance={attendance}
+        users={users}
+        contractorId={activeContractorId}
+      />
 
       <AddWorkerModal
         isOpen={isAddModalOpen}
@@ -118,6 +182,14 @@ export default function ContractorDash({ userProfile }) {
         currentUserRole="contractor"
         currentUserId={userProfile?.id}
         contractorId={activeContractorId}
+      />
+
+      <EditAttendanceModal
+        isOpen={!!editingRecord}
+        onClose={() => setEditingRecord(null)}
+        record={editingRecord}
+        users={users}
+        onRecordUpdated={handleRecordUpdated}
       />
     </div>
   );
