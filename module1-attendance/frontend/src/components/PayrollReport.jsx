@@ -348,6 +348,10 @@ export default function PayrollReport({ attendance = [], users = [], contractorI
               </div>
               <div className="payroll-mob-grid">
                 <div className="mob-stat">
+                  <span className="mob-stat-label">Working</span>
+                  <span className="mob-stat-value">{row.workingDays}d</span>
+                </div>
+                <div className="mob-stat">
                   <span className="mob-stat-label">Present</span>
                   <span className="mob-stat-value num-present">{row.presentDays}</span>
                 </div>
