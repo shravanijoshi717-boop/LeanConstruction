@@ -100,7 +100,7 @@ export default function Login() {
           <div className="hero-footer" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
             <span>Powered by Lean Construction OS</span>
             <a 
-              href="http://localhost:5174" 
+              href="/inventory" 
               style={{
                 display: "inline-flex",
                 alignItems: "center",

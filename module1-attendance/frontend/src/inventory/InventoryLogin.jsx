@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from "../lib/supabase";
-import "./Login.css";
+import "./InventoryLogin.css";
 
 export default function Login({ onDemoLogin }) {
   const [isSignUp, setIsSignUp] = useState(false);

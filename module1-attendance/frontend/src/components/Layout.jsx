@@ -101,7 +101,7 @@ export default function Layout({ user, userProfile, children }) {
 
           <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
             <a
-              href="http://localhost:5174"
+              href="/inventory"
               className="nav-rfid-link"
               title="Open RFID Inventory Portal"
               style={{

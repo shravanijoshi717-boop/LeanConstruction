@@ -5,8 +5,22 @@ import Login from "./pages/Login";
 import ContractorDash from "./pages/ContractorDash";
 import SupervisorDash from "./pages/SupervisorDash";
 import WorkerDash from "./pages/WorkerDash";
+import InventoryPortal from "./inventory/InventoryPortal";
 
 function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  // If URL path is /inventory or /rfid -> Render RFID Material Inventory Module
+  if (currentPath.startsWith("/inventory") || currentPath.startsWith("/rfid")) {
+    return <InventoryPortal />;
+  }
+
   const [session, setSession] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);

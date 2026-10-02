@@ -1,0 +1,70 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-canvas);
+}
+
+.content-container {
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+/* Toast Message - Minimal Light */
+.app-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  animation: toastSlideUp 0.25s ease-out;
+}
+
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-toast.success {
+  background: #ffffff;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.app-toast.warning {
+  background: #ffffff;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.app-toast.danger {
+  background: #ffffff;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.toast-icon {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1.25rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-container {
+    padding: 1rem 0.75rem;
+  }
+}
