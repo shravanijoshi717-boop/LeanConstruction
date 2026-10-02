@@ -1,0 +1,140 @@
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.65rem;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.15s ease;
+}
+
+.kpi-card:hover {
+  border-color: #d4d4d8;
+}
+
+.kpi-card.warning-glow {
+  border-color: #fde68a;
+  background: #fffdf5;
+}
+
+.kpi-card.danger-glow {
+  border-color: #fecaca;
+  background: #fffafa;
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.kpi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-icon.indigo {
+  background: #f4f4f5;
+  color: #09090b;
+}
+
+.kpi-icon.cyan {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.kpi-icon.amber {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.kpi-icon.red {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.kpi-icon.emerald {
+  background: #f4f4f5;
+  color: #52525b;
+}
+
+.kpi-value {
+  font-size: 1.65rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #09090b;
+  letter-spacing: -0.02em;
+}
+
+.kpi-unit {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #a1a1aa;
+}
+
+.text-cyan { color: #09090b; }
+.text-amber { color: #d97706; }
+.text-red { color: #dc2626; }
+.text-emerald { color: #09090b; }
+
+.kpi-caption {
+  font-size: 0.72rem;
+  color: #a1a1aa;
+  display: block;
+}
+
+/* Mobile Responsiveness (Identical to Attendance Module StatsBar) */
+@media (max-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .kpi-card {
+    padding: 0.85rem 1rem;
+    gap: 0.4rem;
+  }
+
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+
+  .kpi-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .kpi-caption {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

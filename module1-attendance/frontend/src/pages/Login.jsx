@@ -97,8 +97,28 @@ export default function Login() {
               for contractors, supervisors, and workers.
             </p>
           </div>
-          <div className="hero-footer">
+          <div className="hero-footer" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
             <span>Powered by Lean Construction OS</span>
+            <a 
+              href="http://localhost:5174" 
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.45rem",
+                padding: "0.45rem 0.85rem",
+                borderRadius: "6px",
+                background: "rgba(255, 255, 255, 0.12)",
+                color: "#ffffff",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                textDecoration: "none",
+                border: "1px solid rgba(255, 255, 255, 0.25)"
+              }}
+              title="Open RFID Inventory Portal"
+            >
+              <span>Switch to RFID Inventory</span>
+              <span style={{ fontSize: "0.75rem", opacity: 0.85 }}>➔</span>
+            </a>
           </div>
         </div>
       </div>

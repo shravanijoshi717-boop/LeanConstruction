@@ -99,7 +99,30 @@ export default function Layout({ user, userProfile, children }) {
             </div>
           </div>
 
-          <div className="header-right">
+          <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+            <a
+              href="http://localhost:5174"
+              className="nav-rfid-link"
+              title="Open RFID Inventory Portal"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.45rem",
+                padding: "0.42rem 0.85rem",
+                borderRadius: "6px",
+                background: "#09090b",
+                border: "1px solid #09090b",
+                color: "#ffffff",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                textDecoration: "none",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.08)"
+              }}
+            >
+              <span>RFID Material Inventory</span>
+              <span style={{ fontSize: "0.75rem", opacity: 0.85 }}>➔</span>
+            </a>
+
             <div className="user-profile">
               <div className="avatar">
                 {(userProfile?.full_name || user.email)[0].toUpperCase()}

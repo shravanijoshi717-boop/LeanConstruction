@@ -1,0 +1,12 @@
+{
+  "name": "module2-rfid-inventory-scripts",
+  "version": "1.0.0",
+  "description": "Simulation script for Module 2 RFID Pipe Inventory",
+  "main": "simulate_rfid_inventory.js",
+  "scripts": {
+    "start": "node simulate_rfid_inventory.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
