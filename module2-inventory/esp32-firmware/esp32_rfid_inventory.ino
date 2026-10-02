@@ -135,8 +135,8 @@ void sendRemovalToSupabase(String tagId, int qty) {
   // Prepare JSON Payload
   StaticJsonDocument<256> doc;
   doc["p_tag_id"] = tagId;
-  doc["p_qty_removed"] = qty;
-  doc["p_performed_by"] = "ESP32-Reader-Yard1";
+  doc["p_qty"] = qty;
+  doc["p_operator"] = "ESP32-Reader-Yard1";
   doc["p_notes"] = "Physical scan at storage bay";
 
   String requestBody;
@@ -153,7 +153,7 @@ void sendRemovalToSupabase(String tagId, int qty) {
     DeserializationError error = deserializeJson(resDoc, response);
     if (!error && resDoc["success"] == true) {
       int remaining = resDoc["remaining_quantity"];
-      bool isLowStock = resDoc["is_low_stock"];
+      bool isLowStock = resDoc["low_stock_triggered"] | resDoc["is_low_stock"];
       String status = resDoc["status"];
 
       Serial.printf("📦 Bundle: %s | Remaining: %d | Status: %s\n", 
